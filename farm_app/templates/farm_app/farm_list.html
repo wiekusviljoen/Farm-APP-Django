@@ -5,6 +5,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farm List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZmFybXxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Background color with opacity */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* Drop shadow */
+            margin-top: 50px;
+            /* Adjust as needed */
+
+        }
+
+        h1 {
+            color: #3b5e3b;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            /* Center align content */
+        }
+
+        li:hover {
+            background-color: #f0f0f0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3b5e3b;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,8 +77,8 @@
         {% for farm in farm_list %}
         <li>
             <a href="{% url 'farm_app:farm_detail' farm.id %}">{{ farm.name }}</a>
-            | <a href="{% url 'farm_app:cow_detail' farm.id %}">View Cows</a>
-            | <a href="{% url 'farm_app:bull_detail' farm.id %}">View Bulls</a>
+            <!--| <a href="{% url 'farm_app:cow_detail' farm.id %}">View Cows</a>
+            | <a href="{% url 'farm_app:bull_detail' farm.id %}">View Bulls</a>-->
         </li>
         {% endfor %}
     </ul>

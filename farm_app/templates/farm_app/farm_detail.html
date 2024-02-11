@@ -5,16 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ farm.name }} Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZmFybXxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Background color with opacity */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* Drop shadow */
+            margin-top: 50px;
+            /* Adjust as needed */
+        }
+
+        h1,
+        p {
+            color: #3b5e3b;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 
 <body>
-
-
-    <h1>{{ farm.name }} - Farm Detail</h1>
-    <p>Location: {{ farm.location }}</p>
-    <p>Cows: {{ farm.cows_count }}</p>
-    <p>Bulls: {{ farm.bulls_count }}</p>
-    <p>Total Cattle: {{ farm.total_cattle }}</p>
+    <div class="container">
+        <h1>{{ farm.name }} - Farm Detail</h1>
+        <p>Location: {{ farm.location }}</p>
+        <p>Cows: {{ farm.cows_count }}</p>
+        <p>Bulls: {{ farm.bulls_count }}</p>
+        <p>Total Cattle: {{ farm.total_cattle }}</p>
+    </div>
 </body>
 
 </html>
