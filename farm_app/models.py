@@ -44,3 +44,4 @@ class Farm(models.Model):
     @property
     def total_cattle(self):
         return self.cows_count + self.bulls_count + self.calf_count
+

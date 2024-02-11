@@ -74,15 +74,20 @@
 <body>
     <h1><i>List of Farms</i></h1>
 
+
     <ul>
         {% for farm in farm_list %}
+
         <li>
             <a href="{% url 'farm_app:farm_detail' farm.id %}">{{ farm.name }}</a>
             <!--| <a href="{% url 'farm_app:cow_detail' farm.id %}">View Cows</a>
             | <a href="{% url 'farm_app:bull_detail' farm.id %}">View Bulls</a>-->
         </li>
+
         {% endfor %}
     </ul>
+
+
 </body>
 
 </html>
