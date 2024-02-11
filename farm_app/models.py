@@ -29,6 +29,7 @@ class Bull(models.Model):
     weight = models.DecimalField(max_digits=5, decimal_places=2)
 
 class Farm(models.Model):
+    date = models.DateField(null=True)
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     breed = models.CharField(max_length=100,choices=CATEGORY,null = True)
@@ -38,6 +39,7 @@ class Farm(models.Model):
     vaccine1 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
     vaccine2 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
     vaccine3 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
+    is_branded = models.BooleanField(default=False)
 
     @property
     def total_cattle(self):

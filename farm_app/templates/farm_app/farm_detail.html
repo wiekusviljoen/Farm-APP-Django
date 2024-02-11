@@ -40,12 +40,14 @@
 <body>
     <div class="container">
         <h1>{{ farm.name }}</h1>
+        <p>Date: {{ farm.date }}</p>
         <p>Location: {{ farm.location }}</p>
         <p>Breed: {{ farm.breed }}</p>
         <p>Cows: {{ farm.cows_count }}</p>
         <p>Bulls: {{ farm.bulls_count }}</p>
         <p>Calfs: {{ farm.calf_count }}</p>
         <p>Vaccine: {{ farm.vaccine1}},{{farm.vaccine2}},{{farm.vaccine3}} </p>
+        <p>Branded: {{ farm.is_branded }}</p>
 
         <p>Total Cattle: {{ farm.total_cattle }}</p>
     </div>
