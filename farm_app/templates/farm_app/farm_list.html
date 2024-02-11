@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm List</title>
+</head>
+
+<body>
+    <h1>List of Farms</h1>
+
+    <ul>
+        {% for farm in farm_list %}
+        <li>
+            <a href="{% url 'farm_app:farm_detail' farm.id %}">{{ farm.name }}</a>
+            | <a href="{% url 'farm_app:cow_detail' farm.id %}">View Cows</a>
+            | <a href="{% url 'farm_app:bull_detail' farm.id %}">View Bulls</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

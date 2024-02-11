@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ cow.name }} Details</title>
+</head>
+
+<body>
+    <h1>{{ cow.name }} Details</h1>
+    <p>Breed: {{ cow.breed }}</p>
+    <p>Age: {{ cow.age }}</p>
+    <p>Weight: {{ cow.weight }}</p>
+    <p>Pregnant: {% if cow.is_pregnant %}Yes{% else %}No{% endif %}</p>
+</body>
+
+</html>
