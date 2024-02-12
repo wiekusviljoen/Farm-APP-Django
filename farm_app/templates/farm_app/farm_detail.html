@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <head>
     <meta charset="UTF-8">
@@ -18,13 +19,13 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+
             background-color: rgba(255, 255, 255, 0.8);
             /* Background color with opacity */
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
-            margin-top: 50px;
+            margin-top: 15px;
             /* Adjust as needed */
         }
 
@@ -32,7 +33,21 @@
         p {
             color: #3b5e3b;
             text-align: center;
-            margin: 10px 0;
+            margin: 5px 0;
+        }
+
+        /* Center the canvas */
+        #pieChartContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        #pieChart {
+            max-width: 380px;
+            /* Optional: Set maximum width */
+            width: 100%;
+            max-height: 380px;
+            /* Ensure the canvas fills its container */
         }
     </style>
 </head>
@@ -50,6 +65,46 @@
         <p>Branded: {{ farm.is_branded }}</p>
 
         <p><b>Total Cattle: {{ farm.total_cattle }}</b></p>
+        <div id="pieChartContainer">
+            <canvas id="pieChart" width="400" height="400"></canvas>
+        </div>
+        <script>
+            // Get data from Django template
+            const cowsCount = {{ farm.cows_count }};
+            const bullsCount = {{ farm.bulls_count }};
+            const calvesCount = {{ farm.calf_count }};
+
+            // Create pie chart
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            const pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Cows', 'Bulls', 'Calves'],
+                    datasets: [{
+                        label: 'Cattle Distribution',
+                        data: [cowsCount, bullsCount, calvesCount],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 205, 86)'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'black',
+
+
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
 
     </div>
 </body>

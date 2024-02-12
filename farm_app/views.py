@@ -23,4 +23,3 @@ def cow_detail(request, cow_id):
 def bull_detail(request, bull_id):
     bull = get_object_or_404(Bull, pk=bull_id)
     return render(request, 'farm_app/bull_detail.html', {'bull': bull})
-
