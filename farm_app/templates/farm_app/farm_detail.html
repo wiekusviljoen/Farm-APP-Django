@@ -19,6 +19,28 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Background color with opacity */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* Drop shadow */
+            margin-top: 50px;
+            margin-left: 15px;
+            /* Adjust as needed */
+
+        }
+
+        h1,
+        p {
+            color: #3b5e3b;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Center the canvas */
+        #pieChartContainer {
+            display: flex;
 
             background-color: rgba(255, 255, 255, 0.8);
             /* Background color with opacity */
@@ -26,27 +48,16 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
             margin-top: 15px;
-            /* Adjust as needed */
-        }
-
-        h1,
-        p {
-            color: #3b5e3b;
-            text-align: center;
-            margin: 5px 0;
-        }
-
-        /* Center the canvas */
-        #pieChartContainer {
-            display: flex;
-            justify-content: center;
+            position: absolute;
+            right: 15px;
+            top: 10px;
         }
 
         #pieChart {
-            max-width: 380px;
+            max-width: 400px;
             /* Optional: Set maximum width */
-            width: 100%;
-            max-height: 380px;
+
+            max-height: 400px;
             /* Ensure the canvas fills its container */
         }
     </style>
@@ -65,9 +76,10 @@
         <p>Branded: {{ farm.is_branded }}</p>
 
         <p><b>Total Cattle: {{ farm.total_cattle }}</b></p>
-        <div id="pieChartContainer">
-            <canvas id="pieChart" width="400" height="400"></canvas>
-        </div>
+    </div>
+    <div id="pieChartContainer">
+        <canvas id="pieChart" width="400" height="400"></canvas>
+
         <script>
             // Get data from Django template
             const cowsCount = {{ farm.cows_count }};
