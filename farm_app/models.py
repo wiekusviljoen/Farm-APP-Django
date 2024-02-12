@@ -40,8 +40,18 @@ class Farm(models.Model):
     vaccine2 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
     vaccine3 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
     is_branded = models.BooleanField(default=False)
+    feed_cost = models.IntegerField(default=0)
 
     @property
     def total_cattle(self):
         return self.cows_count + self.bulls_count + self.calf_count
+    
+    def feed(self):
+        return self.cows_count * 5
+        
+    def feed_cost_per_day(self):
+        feed_per_cow_per_day = 5  # Adjust this value according to your requirements
+        total_feed_per_day = self.cows_count * feed_per_cow_per_day
+        feed_cost_per_day = total_feed_per_day * self.feed_cost / 50
+        return feed_cost_per_day   
 
