@@ -47,10 +47,10 @@ class Farm(models.Model):
         return self.cows_count + self.bulls_count + self.calf_count
     
     def feed(self):
-        return self.cows_count * 5
+        return self.cows_count * 13
         
     def feed_cost_per_day(self):
-        feed_per_cow_per_day = 5  # Adjust this value according to your requirements
+        feed_per_cow_per_day = 13 # Adjust this value according to your requirements
         total_feed_per_day = self.cows_count * feed_per_cow_per_day
         feed_cost_per_day = total_feed_per_day * self.feed_cost / 50
         return feed_cost_per_day   
