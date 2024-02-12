@@ -17,7 +17,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 15px;
             background-color: rgba(255, 255, 255, 0.8);
@@ -25,7 +25,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
-            margin-top: 50px;
+            margin-top: 30px;
             margin-left: 15px;
             /* Adjust as needed */
 
@@ -54,10 +54,10 @@
         }
 
         #pieChart {
-            max-width: 400px;
+            max-width: 500px;
             /* Optional: Set maximum width */
 
-            max-height: 400px;
+            max-height: 500px;
             /* Ensure the canvas fills its container */
         }
     </style>
@@ -78,7 +78,7 @@
         <p><b>Total Cattle: {{ farm.total_cattle }}</b></p>
     </div>
     <div id="pieChartContainer">
-        <canvas id="pieChart" width="400" height="400"></canvas>
+        <canvas id="pieChart" width="500" height="500"></canvas>
 
         <script>
             // Get data from Django template
