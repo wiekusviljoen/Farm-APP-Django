@@ -25,8 +25,9 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
-            margin-top: 70px;
+            margin-top: 100px;
             margin-left: 15px;
+            position: relative;
             /* Adjust as needed */
 
         }
@@ -50,7 +51,18 @@
             margin-top: 15px;
             position: absolute;
             right: 15px;
-            top: 50px;
+            top: 80px;
+        }
+
+        .btn_container {
+            display: flex;
+            position: relative;
+            background-color: rgba(82, 80, 80, 0.8);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            height: 55px;
+
+
         }
 
         #pieChart {
@@ -67,7 +79,8 @@
         }
 
         a:hover {
-            text-decoration: underline;
+            font-weight: bold;
+            font-size: larger;
         }
 
         .button {
@@ -84,7 +97,7 @@
         }
 
         .button:hover {
-            background-color: #45a049;
+            background-color: #05fc11;
         }
 
         .login-button {
@@ -93,21 +106,28 @@
             right: 10px;
         }
 
-        .home-button {
-            position: absolute;
+        .back-button {
+
             top: 10px;
-            right: 240px;
+            right: auto;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+            position: absolute;
+            margin-left: 10px;
         }
     </style>
 </head>
 
 <body>
+    <div class="btn_container">
 
-    <a href="/admin/" class="button">Go to Admin</a>
+        <a href="/admin/" class="button">Go to Admin</a>
 
-    <a href="{% url 'user_auth:login' %}" class="button login-button">Login</a>
+        <a href="{% url 'user_auth:login' %}" class="button login-button">Login</a>
 
-    <a href="/farm_app/" class="button home-button">Home</a>
+        <a href="/farm_app/" class="button back-button">Back</a>
+
+    </div>
 
     <div class="container">
         <h1>{{ farm.name }}</h1>
