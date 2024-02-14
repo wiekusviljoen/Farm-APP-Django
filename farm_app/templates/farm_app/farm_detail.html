@@ -25,7 +25,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
-            margin-top: 30px;
+            margin-top: 70px;
             margin-left: 15px;
             /* Adjust as needed */
 
@@ -50,7 +50,7 @@
             margin-top: 15px;
             position: absolute;
             right: 15px;
-            top: 10px;
+            top: 50px;
         }
 
         #pieChart {
@@ -60,10 +60,55 @@
             max-height: 500px;
             /* Ensure the canvas fills its container */
         }
+
+        a {
+            text-decoration: none;
+            color: #3b5e3b;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: absolute;
+            top: 10px;
+            right: 100px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .login-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 10px;
+            right: 240px;
+        }
     </style>
 </head>
 
 <body>
+
+    <a href="/admin/" class="button">Go to Admin</a>
+
+    <a href="{% url 'user_auth:login' %}" class="button login-button">Login</a>
+
+    <a href="/farm_app/" class="button home-button">Home</a>
+
     <div class="container">
         <h1>{{ farm.name }}</h1>
         <p>Date: {{ farm.date }}</p>
