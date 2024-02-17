@@ -41,6 +41,7 @@ class Farm(models.Model):
     vaccine2 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
     vaccine3 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
     is_branded = models.BooleanField(default=False)
+    pregnant_cows = models.IntegerField(default=0)
     feed_cost = models.IntegerField(default=0)
 
     @property
@@ -64,4 +65,12 @@ class Farm(models.Model):
             return difference.days
         else:
             return None 
+
+    @property
+    def percentage_pregnant_cows(self):
+        if self.cows_count > 0:
+            return round((self.pregnant_cows / self.cows_count) * 100)
+        else:
+            return 0
+
 

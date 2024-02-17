@@ -17,7 +17,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 300px;
             margin: 0 auto;
             padding: 15px;
             background-color: rgba(255, 255, 255, 0.8);
@@ -25,8 +25,8 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
-            margin-top: 100px;
-            margin-left: 15px;
+            margin-top: 40px;
+            margin-right: 495px;
             position: relative;
             /* Adjust as needed */
 
@@ -54,6 +54,20 @@
             top: 80px;
         }
 
+        #pieChartContainer2 {
+            display: flex;
+
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Background color with opacity */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* Drop shadow */
+            margin-top: 15px;
+            position: absolute;
+            margin-left: 15px;
+            top: 80px;
+        }
+
         .btn_container {
             display: flex;
             position: relative;
@@ -66,10 +80,18 @@
         }
 
         #pieChart {
-            max-width: 500px;
+            max-width: 450px;
             /* Optional: Set maximum width */
 
-            max-height: 500px;
+            max-height: 450px;
+            /* Ensure the canvas fills its container */
+        }
+
+        #pieChart2 {
+            max-width: 450px;
+            /* Optional: Set maximum width */
+
+            max-height: 450px;
             /* Ensure the canvas fills its container */
         }
 
@@ -135,6 +157,7 @@
         <p>Location: {{ farm.location }}</p>
         <p>Breed: {{ farm.breed }}</p>
         <p>Cows: {{ farm.cows_count }}</p>
+        <p>Pregnant cows: {{ farm.percentage_pregnant_cows }}</p>
         <p>Bulls: {{ farm.bulls_count }}</p>
         <p>Calfs: {{ farm.calf_count }}</p>
         <p>Vaccine: {{ farm.vaccine1}},{{farm.vaccine2}},{{farm.vaccine3}} </p>
@@ -143,18 +166,23 @@
         <p>Feed cost: ${{ farm.feed_cost_per_day }} / day</p>
         <p>Days since registration: {{ farm.days_since_registration }}</p>
 
+
         <p><b>Total Cattle: {{ farm.total_cattle }}</b></p>
     </div>
     <div id="pieChartContainer">
         <canvas id="pieChart" width="500" height="500"></canvas>
 
-        <script>
-            // Get data from Django template
+        <script>// Get data from Django template
             const cowsCount = {{ farm.cows_count }};
             const bullsCount = {{ farm.bulls_count }};
             const calvesCount = {{ farm.calf_count }};
+            const totalCattle = cowsCount + bullsCount + calvesCount;
 
-            // Create pie chart
+            // Calculate the percentage of pregnant and non-pregnant cows
+            const pregCount = ({{ farm.pregnant_cows }} / totalCattle) * 100;
+            const nonPregCount = 100 - pregCount;
+
+            // Create the pie chart for cattle distribution
             const ctx = document.getElementById('pieChart').getContext('2d');
             const pieChart = new Chart(ctx, {
                 type: 'pie',
@@ -177,13 +205,49 @@
                         legend: {
                             labels: {
                                 color: 'black',
-
-
                             }
                         }
                     }
                 }
             });
+
+
+        </script>
+    </div>
+    <div id="pieChartContainer2">
+        <canvas id="pieChart2" width="500" height="500"></canvas>
+        <script>
+
+
+
+            // Create the pie chart for pregnant cows
+            const ctx2 = document.getElementById('pieChart2').getContext('2d');
+            const pieChart2 = new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: ['Pregnant %', 'Non-Pregnant %'],
+                    datasets: [{
+                        label: 'Cattle Distribution',
+                        data: [pregCount, nonPregCount],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'black'
+                            }
+                        }
+                    }
+                }
+            });
+
         </script>
 
     </div>
