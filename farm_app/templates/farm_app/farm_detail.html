@@ -179,7 +179,7 @@
             const totalCattle = cowsCount + bullsCount + calvesCount;
 
             // Calculate the percentage of pregnant and non-pregnant cows
-            const pregCount = ({{ farm.pregnant_cows }} / totalCattle) * 100;
+            const pregCount = ({{ farm.pregnant_cows }} / cowsCount) * 100;
             const nonPregCount = 100 - pregCount;
 
             // Create the pie chart for cattle distribution
@@ -204,22 +204,30 @@
                     plugins: {
                         legend: {
                             labels: {
-                                color: 'black',
+                                color: 'black'
                             }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Cattle Chart', // Title text
+                            color: 'black',
+                            fontSize: 16,
+                            position: 'top' // Position the title on top
                         }
                     }
                 }
             });
 
-
         </script>
     </div>
     <div id="pieChartContainer2">
+
         <canvas id="pieChart2" width="500" height="500"></canvas>
         <script>
 
 
 
+            // Create the pie chart for pregnant cows
             // Create the pie chart for pregnant cows
             const ctx2 = document.getElementById('pieChart2').getContext('2d');
             const pieChart2 = new Chart(ctx2, {
@@ -243,10 +251,17 @@
                             labels: {
                                 color: 'black'
                             }
+                        },
+                        title: {
+                            display: true,
+                            text: 'How many of the cows are pregnant?', // Title text
+                            color: 'black',
+
                         }
                     }
                 }
             });
+
 
         </script>
 
