@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime, timedelta
 
 
 CATEGORY =(
@@ -53,5 +54,14 @@ class Farm(models.Model):
         feed_per_cow_per_day = 13 # Adjust this value according to your requirements
         total_feed_per_day = self.cows_count * feed_per_cow_per_day
         feed_cost_per_day = total_feed_per_day * self.feed_cost / 50
-        return feed_cost_per_day   
+        return feed_cost_per_day  
+
+    @property
+    def days_since_registration(self):
+        if self.date:
+            # Calculate the difference between the current date and the registration date
+            difference = datetime.now().date() - self.date
+            return difference.days
+        else:
+            return None 
 
