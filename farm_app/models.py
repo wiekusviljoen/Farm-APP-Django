@@ -68,18 +68,6 @@ class Farm(models.Model):
         else:
             return None 
 
-    @property
-    def percentage_pregnant_cows(self):
-        if self.cows_count > 0:
-            return round((self.pregnant_cows / self.cows_count) * 100)
-        else:
-            return 0
-
-    @property
-    def percentage_sick(self):
-        if self.total_cattle > 0:
-            return round((self.sick / self.total_cattle) * 100)
-        else:
-            return 0
+   
 
 

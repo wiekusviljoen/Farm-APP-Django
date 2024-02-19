@@ -276,6 +276,7 @@
             const pregCount = ({{ farm.pregnant_cows }} / cowsCount) * 100;
             const nonPregCount = 100 - pregCount;
 
+            // Calculate the percentage sick and non-sick cattle
             const sickCount = ({{ farm.sick }} / totalCattle) * 100;
             const nonSickCount = 100 - sickCount;
 
