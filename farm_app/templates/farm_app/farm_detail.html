@@ -159,6 +159,40 @@
             position: absolute;
             margin-left: 10px;
         }
+
+        #clock {
+            font-family: Arial, sans-serif;
+            font-size: 36px;
+            text-align: center;
+            margin-top: 5px;
+
+            width: 200px;
+            padding: 10px;
+            border-radius: 10px;
+
+
+        }
+
+        #clock-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            top: 365px;
+
+            position: absolute;
+            right: 320px;
+            width: 260px;
+            height: 260px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        #title {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -345,6 +379,41 @@
         </script>
 
     </div>
+    <div id="clock-container">
+        <h2 id="title">Days Since Registration</h2>
+        <div id="clock"></div>
+    </div>
+
+    <script>
+        function updateClock() {
+            // Get the current date
+            const now = new Date();
+
+            // Get the registration date from Django template
+            const registrationDate = new Date('{{ farm.date }}');
+
+            // Calculate the difference in milliseconds
+            const difference = now - registrationDate;
+
+            // Calculate the number of days, hours, minutes, and seconds
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Format the time as HH:MM:SS
+            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Update the clock element with the formatted time
+            document.getElementById('clock').innerText = formattedTime;
+        }
+
+        // Call the updateClock function initially to display the current time
+        updateClock();
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+    </script>
 </body>
 
 </html>
