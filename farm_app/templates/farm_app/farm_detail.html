@@ -17,7 +17,7 @@
         }
 
         .container {
-            max-width: 300px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 15px;
             background-color: rgba(255, 255, 255, 0.8);
@@ -25,8 +25,8 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
-            margin-top: 40px;
-            margin-right: 495px;
+            margin-top: 10px;
+            margin-right: 380px;
             position: relative;
             /* Adjust as needed */
 
@@ -51,7 +51,7 @@
             margin-top: 15px;
             position: absolute;
             right: 15px;
-            top: 80px;
+            top: 50px;
         }
 
         #pieChartContainer2 {
@@ -65,7 +65,21 @@
             margin-top: 15px;
             position: absolute;
             margin-left: 15px;
-            top: 80px;
+            top: 50px;
+        }
+
+        #pieChartContainer3 {
+            display: flex;
+
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Background color with opacity */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            /* Drop shadow */
+            margin-top: 15px;
+            position: absolute;
+            margin-left: 15px;
+            top: 350px;
         }
 
         .btn_container {
@@ -80,10 +94,10 @@
         }
 
         #pieChart {
-            max-width: 450px;
+            max-width: 500px;
             /* Optional: Set maximum width */
 
-            max-height: 450px;
+            max-height: 280px;
             /* Ensure the canvas fills its container */
         }
 
@@ -91,7 +105,15 @@
             max-width: 450px;
             /* Optional: Set maximum width */
 
-            max-height: 450px;
+            max-height: 280px;
+            /* Ensure the canvas fills its container */
+        }
+
+        #pieChart3 {
+            max-width: 450px;
+            /* Optional: Set maximum width */
+
+            max-height: 280px;
             /* Ensure the canvas fills its container */
         }
 
@@ -178,14 +200,22 @@
             const calvesCount = {{ farm.calf_count }};
             const totalCattle = cowsCount + bullsCount + calvesCount;
 
+
+
             // Calculate the percentage of pregnant and non-pregnant cows
             const pregCount = ({{ farm.pregnant_cows }} / cowsCount) * 100;
             const nonPregCount = 100 - pregCount;
 
+            const sickCount = ({{ farm.sick }} / cowsCount) * 100;
+            const nonSickCount = 100 - sickCount;
+
+
+
+
             // Create the pie chart for cattle distribution
             const ctx = document.getElementById('pieChart').getContext('2d');
             const pieChart = new Chart(ctx, {
-                type: 'pie',
+                type: 'bar',
                 data: {
                     labels: ['Cows', 'Bulls', 'Calves'],
                     datasets: [{
@@ -200,7 +230,7 @@
                     }]
                 },
                 options: {
-                    responsive: false,
+                    responsive: true,
                     plugins: {
                         legend: {
                             labels: {
@@ -245,7 +275,7 @@
                     }]
                 },
                 options: {
-                    responsive: false,
+                    responsive: true,
                     plugins: {
                         legend: {
                             labels: {
@@ -255,6 +285,54 @@
                         title: {
                             display: true,
                             text: 'How many of the cows are pregnant?', // Title text
+                            color: 'black',
+
+                        }
+                    }
+                }
+            });
+
+
+        </script>
+
+    </div>
+
+
+    <div id="pieChartContainer3">
+
+        <canvas id="pieChart3" width="500" height="500"></canvas>
+        <script>
+
+
+
+            // Create the pie chart for pregnant cows
+            // Create the pie chart for pregnant cows
+            const ctx3 = document.getElementById('pieChart3').getContext('2d');
+            const pieChart3 = new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sick %', 'Healthy %'],
+                    datasets: [{
+                        label: 'Cattle Distribution',
+                        data: [sickCount, nonSickCount],
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'black'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'How many of the cattle are sick?', // Title text
                             color: 'black',
 
                         }
