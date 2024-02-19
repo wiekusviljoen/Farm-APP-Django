@@ -198,6 +198,28 @@
             margin-bottom: 10px;
             position: absolute;
         }
+
+
+        #notes-container {
+            position: fixed;
+            top: 480px;
+            width: 610px;
+            /* Adjust positioning as needed */
+            left: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #notes-title {
+            margin-bottom: 10px;
+        }
+
+        #notes {
+            font-size: 16px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -218,19 +240,27 @@
         <p>Location: {{ farm.location }}</p>
         <p>Breed: {{ farm.breed }}</p>
         <p>Cows: {{ farm.cows_count }}</p>
-        <p>Pregnant cows: {{ farm.percentage_pregnant_cows }}</p>
+        <p>Pregnant cows: {{ farm.pregnant_cows }}</p>
         <p>Bulls: {{ farm.bulls_count }}</p>
         <p>Calfs: {{ farm.calf_count }}</p>
         <p>Vaccine: {{ farm.vaccine1}},{{farm.vaccine2}},{{farm.vaccine3}} </p>
-        <p>Sick: {{ farm.percentage_sick }}</p>
+        <p>Sick: {{ farm.sick }}</p>
         <p>Branded: {{ farm.is_branded }}</p>
-        <p>Feed: {{ farm.feed }} kg / day</p>
-        <p>Feed cost: ${{ farm.feed_cost_per_day }} / day</p>
+
 
 
 
         <p><b>Total Cattle: {{ farm.total_cattle }}</b></p>
     </div>
+
+
+    <div id="notes-container">
+        <h2 id="notes-title">Farm Notes</h2>
+        <div id="notes">{{ farm.notes }}</div>
+    </div>
+
+
+
     <div id="pieChartContainer">
         <canvas id="pieChart" width="500" height="500"></canvas>
 

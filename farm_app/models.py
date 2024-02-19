@@ -44,6 +44,7 @@ class Farm(models.Model):
     pregnant_cows = models.IntegerField(default=0)
     sick = models.IntegerField(default=0)
     feed_cost = models.IntegerField(default=0)
+    notes = models.CharField(max_length=100 , null=True)
 
     @property
     def total_cattle(self):
