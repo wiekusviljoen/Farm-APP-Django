@@ -17,7 +17,7 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 15px;
             background-color: rgba(255, 255, 255, 0.8);
@@ -26,7 +26,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
             margin-top: 10px;
-            margin-right: 380px;
+            margin-left: 15px;
             position: relative;
             /* Adjust as needed */
 
@@ -50,7 +50,7 @@
             /* Drop shadow */
             margin-top: 15px;
             position: absolute;
-            right: 15px;
+            right: 320px;
             top: 50px;
         }
 
@@ -64,7 +64,7 @@
             /* Drop shadow */
             margin-top: 15px;
             position: absolute;
-            margin-left: 15px;
+            right: 15px;
             top: 50px;
         }
 
@@ -78,7 +78,7 @@
             /* Drop shadow */
             margin-top: 15px;
             position: absolute;
-            margin-left: 15px;
+            right: 15px;
             top: 350px;
         }
 
@@ -183,6 +183,7 @@
         <p>Bulls: {{ farm.bulls_count }}</p>
         <p>Calfs: {{ farm.calf_count }}</p>
         <p>Vaccine: {{ farm.vaccine1}},{{farm.vaccine2}},{{farm.vaccine3}} </p>
+        <p>Sick: {{ farm.percentage_sick }}</p>
         <p>Branded: {{ farm.is_branded }}</p>
         <p>Feed: {{ farm.feed }} kg / day</p>
         <p>Feed cost: ${{ farm.feed_cost_per_day }} / day</p>
@@ -206,7 +207,7 @@
             const pregCount = ({{ farm.pregnant_cows }} / cowsCount) * 100;
             const nonPregCount = 100 - pregCount;
 
-            const sickCount = ({{ farm.sick }} / cowsCount) * 100;
+            const sickCount = ({{ farm.sick }} / totalCattle) * 100;
             const nonSickCount = 100 - sickCount;
 
 
