@@ -55,4 +55,4 @@ Author : Petrus Viljoen
 
 Bootcamp : HyperionDev : https://www.hyperiondev.com/
 
-https://github.com/wiekusviljoen/pollsApp
+https://github.com/wiekusviljoen/Farm-APP-Django
