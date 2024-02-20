@@ -18,8 +18,6 @@ git clone https://github.com/wiekusviljoen/Farm-APP-Django.git
 
 cd Farm-APP-Django
 
-pip install -r requirements.txt
-
 python manage.py runserver
 
 # Usage :
