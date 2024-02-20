@@ -66,15 +66,16 @@ class Farm(models.Model):
         
     def feed_cost_per_day(self):
     # Adjusting the feed per cow per day value
-        feed_per_cow_per_day = 1  # You can adjust this value based on your requirements
+        feed_per_cow_per_day = 2  # You can adjust this value based on your requirements
 
     # Calculating total feed required per day for all cattle
         total_feed_per_day = (self.cows_count * feed_per_cow_per_day) + (self.bulls_count * feed_per_cow_per_day * 1.5) + (self.calf_count * feed_per_cow_per_day * 0.5)
 
     # Calculating total feed cost per day based on the price per bag and total cattle weight
-        feed_cost_per_day = total_feed_per_day * (self.feed_cost / 50) * self.total_cattle
+        feed_cost_per_day = total_feed_per_day * (self.feed_cost / 50)
 
         return feed_cost_per_day
+
 
 
  
