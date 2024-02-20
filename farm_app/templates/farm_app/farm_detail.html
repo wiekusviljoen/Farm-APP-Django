@@ -170,7 +170,7 @@
             padding: 10px;
 
             position: absolute;
-            top: 130px;
+            top: 100px;
             color: rgb(20, 90, 241);
 
 
@@ -186,7 +186,7 @@
             padding: 10px;
 
             position: absolute;
-            top: 130px;
+            top: 110px;
             color: rgb(20, 90, 241);
 
 
@@ -209,10 +209,13 @@
 
         #title {
             font-family: Arial, sans-serif;
-            font-size: 24px;
+            font-size: 20px;
             top: 50px;
             margin-bottom: 10px;
             position: absolute;
+            right: 45px;
+            text-decoration-line: underline;
+            color: #253f25;
         }
 
 
@@ -435,9 +438,9 @@
 
     </div>
     <div id="clock-container">
-        <h2 id="title">Days Since Registration </h2>
+        <h2 id="title">Running Feed Costs </h2>
         <div id="clock"></div>
-        <div id="cost">${{ farm.total_feed_cost }}</div>
+        <div id="cost"><b>${{ farm.total_feed_cost }}</b></div>
 
 
     </div>
