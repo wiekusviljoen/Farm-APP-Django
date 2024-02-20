@@ -221,7 +221,7 @@
 
         #notes-container {
             position: fixed;
-            top: 480px;
+            top: 500px;
             width: 610px;
             /* Adjust positioning as needed */
             left: 15px;
@@ -233,6 +233,7 @@
 
         #notes-title {
             margin-bottom: 10px;
+            color: #253f25;
         }
 
         #notes {
@@ -265,13 +266,7 @@
         <p>Vaccine: {{ farm.vaccine1}},{{farm.vaccine2}},{{farm.vaccine3}} </p>
         <p>Sick: {{ farm.sick }}</p>
         <p>Branded: {{ farm.is_branded }}</p>
-
-
-
-
-
-
-
+        <p>Feed bag cost(50kg): ${{ farm.feed_cost }}</p>
         <p><b>Total Cattle: {{ farm.total_cattle }}</b></p>
     </div>
 
