@@ -176,6 +176,22 @@
 
         }
 
+        #cost {
+            font-family: Arial, sans-serif;
+            font-size: 25px;
+            text-align: center;
+            margin-top: 50px;
+            right: 30px;
+            width: 200px;
+            padding: 10px;
+
+            position: absolute;
+            top: 130px;
+            color: rgb(20, 90, 241);
+
+
+        }
+
         #clock-container {
             background-color: rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -246,6 +262,9 @@
         <p>Vaccine: {{ farm.vaccine1}},{{farm.vaccine2}},{{farm.vaccine3}} </p>
         <p>Sick: {{ farm.sick }}</p>
         <p>Branded: {{ farm.is_branded }}</p>
+
+
+
 
 
 
@@ -416,8 +435,11 @@
 
     </div>
     <div id="clock-container">
-        <h2 id="title">Days Since Registration</h2>
+        <h2 id="title">Days Since Registration </h2>
         <div id="clock"></div>
+        <div id="cost">${{ farm.total_feed_cost }}</div>
+
+
     </div>
 
     <script>

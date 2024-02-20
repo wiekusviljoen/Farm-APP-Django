@@ -46,6 +46,18 @@ class Farm(models.Model):
     feed_cost = models.IntegerField(default=0)
     notes = models.CharField(max_length=100 , null=True)
 
+
+    def total_feed_cost(self):
+        days_registered = self.days_since_registration
+        if days_registered is not None:
+            feed_cost_per_day = self.feed_cost_per_day()
+            total_cost = feed_cost_per_day * days_registered
+            return total_cost
+        else:
+            return None
+
+    
+
     @property
     def total_cattle(self):
         return self.cows_count + self.bulls_count + self.calf_count
