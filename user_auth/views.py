@@ -11,6 +11,8 @@ from django.http import HttpResponseRedirect
 def user_login(request): 
     return render(request, 'authentication/login.html')
 
+    
+
 
 def authenticate_user(request):
     username = request.POST['username']
