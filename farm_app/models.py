@@ -16,6 +16,13 @@ CATEGORY2 = (
     ('None','None')
 )   
 
+CATEGORY3 = (
+    ('Energie Lek','Energie Lek'),
+    ('Beef Finisher', 'Beef Finisher'),
+    ('Koei & Kalf', 'Koei & Kalf'),
+    ('None','None')
+)
+
 class Cow(models.Model):
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
@@ -43,6 +50,7 @@ class Farm(models.Model):
     is_branded = models.BooleanField(default=False)
     pregnant_cows = models.IntegerField(default=0)
     sick = models.IntegerField(default=0)
+    Feed = models.CharField(max_length=100,choices=CATEGORY3,null = True)
     feed_cost = models.FloatField( default=0)
     notes = models.CharField(max_length=100 , null=True)
 
