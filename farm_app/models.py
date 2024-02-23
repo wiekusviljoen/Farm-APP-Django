@@ -2,21 +2,21 @@ from django.db import models
 from datetime import datetime, timedelta
 
 
-CATEGORY =(
+Breed_CATEGORY =(
     ('Bonsmara', 'Bonsmara'),
     ('Brahman', 'Brahman'),
     ('Jersey', 'Jersey'),
     ('Muliple','Multiple')
 )
 
-CATEGORY2 = (
+Vaccine_CATEGORY = (
     ('Multivax', 'Multivax'),
     ('Disulfox', 'Disulfox'),
     ('Terramycin', 'Terramycin'),
     ('None','None')
 )   
 
-CATEGORY3 = (
+Feed_CATEGORY = (
     ('Energie Lek','Energie Lek'),
     ('Beef Finisher', 'Beef Finisher'),
     ('Koei & Kalf', 'Koei & Kalf'),
@@ -40,17 +40,17 @@ class Farm(models.Model):
     date = models.DateField(null=True)
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    breed = models.CharField(max_length=100,choices=CATEGORY,null = True)
+    breed = models.CharField(max_length=100,choices=Breed_CATEGORY,null = True)
     cows_count = models.IntegerField(default=0)  # Number of cows
     bulls_count = models.IntegerField(default=0)  # Number of bulls
     calf_count = models.IntegerField(default=0)
-    vaccine1 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
-    vaccine2 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
-    vaccine3 = models.CharField(max_length=100,choices=CATEGORY2,null = True)
+    vaccine1 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null = True)
+    vaccine2 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null = True)
+    vaccine3 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null = True)
     is_branded = models.BooleanField(default=False)
     pregnant_cows = models.IntegerField(default=0)
     sick = models.IntegerField(default=0)
-    Feed = models.CharField(max_length=100,choices=CATEGORY3,null = True)
+    Feed = models.CharField(max_length=100,choices=Feed_CATEGORY,null = True)
     feed_cost = models.FloatField( default=0)
     notes = models.CharField(max_length=100 , null=True)
 
@@ -60,9 +60,11 @@ class Farm(models.Model):
         if days_registered is not None:
             feed_cost_per_day = self.feed_cost_per_day()
             total_cost = feed_cost_per_day * days_registered
-            return total_cost
+            rounded_cost = round(total_cost, 2)  # Round the total cost to 2 decimal places
+            return rounded_cost
         else:
             return None
+
 
     
 
