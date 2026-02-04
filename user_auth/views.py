@@ -1,14 +1,17 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 
 # Create your views here.
 def user_login(request): 
+    # Redirect already logged-in users to the farm list
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('farm_app:farm_list'))
     return render(request, 'authentication/login.html')
 
     
@@ -28,37 +31,37 @@ def authenticate_user(request):
             reverse('user_auth:show_user')
         )
 
+@login_required
 def show_user(request):
-    print(request.user.username)
     return render(request, 'authentication/user.html', {
         "username": request.user.username,
-        "password": request.user.password
+        "email": request.user.email,
+        "first_name": request.user.first_name,
+        "last_name": request.user.last_name
     })
+
+
+@login_required
+def logout_user(request):
+    """Log out the user and redirect to login page."""
+    logout(request)
+    return HttpResponseRedirect(reverse('user_auth:login'))
 
 
 
 
 
     # yourapp/views.py
-from django.shortcuts import render, redirect
-#from .forms import RegisterForm
-from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm
 
 def register_user(request):
     form = UserCreationForm()
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('/')
-            
-            
-            # Create a new user
-            #user = User.objects.create_user(username=username, password=password, first_name=first_name)
-
-            # Optionally, you can log in the user after registration
+            user = form.save()
+            # Automatically log in the user after successful registration
+            login(request, user)
+            return redirect('farm_app:farm_list')
             
 
     context = {'form': form}

@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Create Farm</title>
+    <link rel="stylesheet" href="{% static 'farm_app/css/form.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Create Farm</h1>
+
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="post" id="farm-form">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div>
+                    {{ form.date.label_tag }}
+                    {{ form.date }}
+                </div>
+                <div>
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                </div>
+
+                <div>
+                    {{ form.location.label_tag }}
+                    {{ form.location }}
+                </div>
+
+                <div>
+                    {{ form.breed.label_tag }}
+                    {{ form.breed }}
+                </div>
+
+                <div>
+                    {{ form.cows_count.label_tag }}
+                    {{ form.cows_count }}
+                </div>
+
+                <div>
+                    {{ form.bulls_count.label_tag }}
+                    {{ form.bulls_count }}
+                </div>
+
+                <div>
+                    {{ form.calf_count.label_tag }}
+                    {{ form.calf_count }}
+                </div>
+
+                <div>
+                    {{ form.Feed.label_tag }}
+                    {{ form.Feed }}
+                    <div class="note">Select feed to auto-lookup price</div>
+                </div>
+
+                <div>
+                    <label for="id_feed_cost">Feed price (per bag)</label>
+                    <div class="feed-price">
+                        {{ form.feed_cost }}
+                        <div class="price" id="live-feed-price">—</div>
+                        <button type="button" class="secondary" id="refresh-price">Refresh</button>
+                        <div class="estimates" id="feed-estimates">
+                            <div>Estimated daily feed cost: <span id="daily-cost">—</span></div>
+                            <div>Estimated monthly cost: <span id="monthly-cost">—</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    {{ form.notes.label_tag }}
+                    {{ form.notes }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="primary">Create</button>
+                <a href="{% url 'farm_app:farm_list' %}" class="secondary">Cancel</a>
+            </div>
+        </form>
+
+        <p class="note">Feed price is fetched live from an external source (or uses a fallback mock).</p>
+
+        <hr>
+        <div class="container" id="live-feed-list">
+            <h2>Available Feeds & Live Prices</h2>
+            <div class="feed-list-controls">
+                <button type="button" class="secondary" id="refresh-feed-list">Refresh Prices</button>
+                <small id="feed-list-last-updated">Last updated: —</small>
+            </div>
+            <table class="feed-table" id="feed-prices-table">
+                <thead>
+                    <tr>
+                        <th>Feed</th>
+                        <th>Price (per bag)</th>
+                    </tr>
+                </thead>
+                <tbody id="feed-prices-body">
+                    <tr>
+                        <td colspan="2">Loading…</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function computeEstimates(price) {
+            // Read counts from the form
+            const cows = parseFloat(document.getElementById('id_cows_count')?.value || 0);
+            const bulls = parseFloat(document.getElementById('id_bulls_count')?.value || 0);
+            const calves = parseFloat(document.getElementById('id_calf_count')?.value || 0);
+            const feed_per_cow = 2;
+            const total_feed_per_day = (cows * feed_per_cow) + (bulls * feed_per_cow * 1.5) + (calves * feed_per_cow * 0.5);
+            const daily_cost = total_feed_per_day * (price / 50);
+            const monthly_cost = daily_cost * 30;
+            document.getElementById('daily-cost').textContent = '$' + daily_cost.toFixed(2);
+            document.getElementById('monthly-cost').textContent = '$' + monthly_cost.toFixed(2);
+        }
+
+        async function updatePrice() {
+            try {
+                const feedSelect = document.getElementById('id_Feed');
+                const feedType = feedSelect ? feedSelect.value : '';
+                const url = new URL('{% url "farm_app:feed_price_api" %}', window.location.origin);
+                if (feedType) url.searchParams.set('feed_type', feedType);
+                // Add cache-busting timestamp so Refresh always requests fresh data
+                url.searchParams.set('_t', Date.now());
+                const res = await fetch(url); if (!res.ok) throw new Error('Network');
+                const data = await res.json();
+                const price = (data.price_per_unit !== null && data.price_per_unit !== undefined) ? data.price_per_unit : (data.price !== null && data.price !== undefined ? data.price : null);
+                const priceEl = document.getElementById('live-feed-price');
+                const costInput = document.getElementById('id_feed_cost');
+                if (price === null) {
+                    costInput.value = '';
+                    priceEl.textContent = 'N/A';
+                    document.getElementById('daily-cost').textContent = '—';
+                    document.getElementById('monthly-cost').textContent = '—';
+                } else {
+                    costInput.value = price;
+                    priceEl.textContent = '$' + price.toFixed(2);
+                    computeEstimates(price);
+                }
+            } catch (e) {
+                document.getElementById('live-feed-price').textContent = 'N/A';
+                console.warn('Could not fetch feed price', e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('refresh-price').addEventListener('click', updatePrice);
+            // Preload on page open
+            updatePrice();
+
+            const feedSelect = document.getElementById('id_Feed');
+            if (feedSelect) {
+                feedSelect.addEventListener('change', updatePrice);
+            }
+
+            // Recompute estimates when cattle counts change
+            ['id_cows_count', 'id_bulls_count', 'id_calf_count'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', () => {
+                    const price = parseFloat(document.getElementById('id_feed_cost')?.value || 0);
+                    if (price) computeEstimates(price);
+                });
+            });
+
+            // Live feed list
+            const feedTableBody = document.getElementById('feed-prices-body');
+            const lastUpdated = document.getElementById('feed-list-last-updated');
+            async function updateFeedList() {
+                try {
+                    const url = new URL('{% url "farm_app:feed_prices" %}', window.location.origin);
+                    url.searchParams.set('_t', Date.now());
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error('Network');
+                    const data = await res.json();
+                    feedTableBody.innerHTML = '';
+                    data.prices.forEach(p => {
+                        const tr = document.createElement('tr');
+                        const nameTd = document.createElement('td');
+                        nameTd.textContent = p.label;
+                        const priceTd = document.createElement('td');
+                        priceTd.textContent = (p.price !== null) ? ('$' + p.price.toFixed(2)) : 'N/A';
+                        tr.appendChild(nameTd);
+                        tr.appendChild(priceTd);
+                        feedTableBody.appendChild(tr);
+                    });
+                    lastUpdated.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                } catch (e) {
+                    feedTableBody.innerHTML = '<tr><td colspan="2">Could not load feed prices</td></tr>';
+                    console.warn('Could not fetch feed prices', e);
+                }
+            }
+
+            document.getElementById('refresh-feed-list').addEventListener('click', updateFeedList);
+            // Initial load
+            updateFeedList();
+            // Auto-refresh every 60 seconds
+            setInterval(updateFeedList, 60 * 1000);
+        });
+    </script>
+</body>
+
+</html>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-*jdf05-*9o%ac5b9tjsyy=vm9@0(ciqj1b!qmna@1h)p7k7lf2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
 # Application definition
@@ -119,7 +120,48 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Feed price external API configuration
+FEED_PRICE_API_URL = os.environ.get('FEED_PRICE_API_URL')
+FEED_PRICE_API_KEY = os.environ.get('FEED_PRICE_API_KEY')
+FEED_PRICE_JSON_PATH = os.environ.get('FEED_PRICE_JSON_PATH', 'price')
+FEED_PRICE_API_KEY_HEADER_NAME = os.environ.get('FEED_PRICE_API_KEY_HEADER_NAME', 'Authorization')
+FEED_PRICE_API_KEY_PREFIX = os.environ.get('FEED_PRICE_API_KEY_PREFIX', 'Bearer ')
+FEED_PRICE_API_KEY_QUERY_PARAM = os.environ.get('FEED_PRICE_API_KEY_QUERY_PARAM')  # e.g. 'api_key'
+
+# Optional mapping of internal feed keys to provider-specific identifiers.
+# Populate these with the provider's commodity/item codes (e.g. FAOSTAT item names or IDs)
+# Example:
+# FEED_PRICE_PROVIDER_MAP = {
+#   'Energie Lek': {'faostat_item': 'MAIZE'},
+#   'Beef Finisher': {'faostat_item': 'CATTLE_FEED'},
+#   'Koei & Kalf': {'faostat_item': 'COW_CALF_FEED'},
+# }
+FEED_PRICE_PROVIDER_MAP = {}
+
+# Abattoir polling configuration
+ABATTOIR_PRICE_POLL_ENABLED = os.environ.get('ABATTOIR_PRICE_POLL_ENABLED', 'True') == 'True'
+ABATTOIR_PRICE_POLL_INTERVAL_MINUTES = int(os.environ.get('ABATTOIR_PRICE_POLL_INTERVAL_MINUTES', '15'))
+# When enabled, the project will add django-crontab entries so you can run
+# `python manage.py crontab add` to schedule periodic fetching of abattoir prices.
+if ABATTOIR_PRICE_POLL_ENABLED:
+    INSTALLED_APPS.append('django_crontab')
+    CRONJOBS = [
+        (f"*/{max(1, ABATTOIR_PRICE_POLL_INTERVAL_MINUTES)} * * * *", 'django.core.management.call_command', ['fetch_abattoir_prices'])
+    ]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Ensure login_required redirects to the project's login view
+LOGIN_URL = 'user_auth:login'
+LOGIN_REDIRECT_URL = 'farm_app:farm_list'
+
+# Session security settings
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access to session cookie
+SESSION_COOKIE_AGE = 3600  # 1 hour session timeout
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Session expires when browser closes
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = True  # CSRF cookie not accessible via JavaScript

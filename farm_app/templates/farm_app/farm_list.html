@@ -16,7 +16,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             background-color: rgba(255, 255, 255, 0.8);
@@ -24,7 +24,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             /* Drop shadow */
-            margin-top: 50px;
+            margin-top: 70px;
             /* Adjust as needed */
 
         }
@@ -78,9 +78,7 @@
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
-            position: absolute;
-            top: 10px;
-            right: 110px;
+            position: static;
         }
 
         .button:hover {
@@ -88,9 +86,7 @@
         }
 
         .logout-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            position: static;
         }
 
         .btn_container {
@@ -99,9 +95,33 @@
             background-color: rgba(82, 80, 80, 0.8);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin: 0 auto;
-            height: 55px;
+            height: auto;
+            padding: 10px 20px;
+            gap: 10px;
+            justify-content: flex-end;
 
+        }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f5f5f5;
         }
     </style>
 </head>
@@ -112,7 +132,12 @@
 
         <a href="/admin/" class="button">Go to Admin</a>
 
+        {% if user.is_authenticated %}
+        <a href="{% url 'farm_app:create_farm' %}" class="button">Add Farm</a>
         <a href="{% url 'user_auth:login' %}" class="button logout-button">Logout</a>
+        {% else %}
+        <a href="{% url 'user_auth:login' %}" class="button logout-button">Login</a>
+        {% endif %}
 
 
 
@@ -132,6 +157,188 @@
         {% endfor %}
     </ul>
 
+    <!-- Abattoir prices section -->
+    {% include 'farm_app/abattoir_list_partial.html' %}
+
+    <style>
+        @keyframes arrowAppearDisappear {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            20% {
+                opacity: 1;
+                transform: scale(1.4);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            80% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        .arrow {
+            display: inline-block;
+            animation: arrowAppearDisappear 1.2s ease-in-out;
+            margin: 0 5px;
+        }
+
+        .arrow.up {
+            color: #28a745;
+            text-shadow: 0 0 10px rgba(40, 167, 69, 0.8);
+        }
+
+        .arrow.down {
+            color: #dc3545;
+            text-shadow: 0 0 10px rgba(220, 53, 69, 0.8);
+        }
+
+        .arrow.flat {
+            color: #888;
+        }
+    </style>
+
+    <script>
+        // Store previous prices to detect changes
+        let previousAbattoirs = {};
+
+        async function updateAbattoirList() {
+            try {
+                const url = '/farm_app/api/abattoir-prices/?_t=' + Date.now();
+                console.log('Fetching prices from:', url);
+                const res = await fetch(url);
+                console.log('Response status:', res.status);
+
+                if (!res.ok) {
+                    throw new Error('API returned status ' + res.status);
+                }
+
+                const data = await res.json();
+                console.log('Received data:', data);
+
+                const body = document.getElementById('abattoir-prices-body');
+                if (!body) {
+                    console.error('Could not find abattoir-prices-body element');
+                    return;
+                }
+
+                if (!data.abattoirs || data.abattoirs.length === 0) {
+                    body.innerHTML = '<tr><td colspan="6">No abattoirs found</td></tr>';
+                    return;
+                }
+
+                body.innerHTML = '';
+
+                data.abattoirs.forEach(a => {
+                    const tr = document.createElement('tr');
+
+                    // Name
+                    const nameTd = document.createElement('td');
+                    nameTd.textContent = a.name || 'Unknown';
+                    tr.appendChild(nameTd);
+
+                    // Location
+                    const locTd = document.createElement('td');
+                    locTd.textContent = a.location || '-';
+                    tr.appendChild(locTd);
+
+                    // Status
+                    const statusTd = document.createElement('td');
+                    if (a.fetch_error) {
+                        statusTd.textContent = 'Error';
+                        statusTd.title = a.fetch_error;
+                        statusTd.className = 'status error';
+                    } else if (a.stale) {
+                        statusTd.textContent = 'Stale';
+                        statusTd.className = 'status stale';
+                    } else {
+                        statusTd.textContent = (a.last_fetched ? 'OK' : 'No data');
+                        statusTd.className = 'status ok';
+                    }
+                    tr.appendChild(statusTd);
+
+                    // Helper function to create price cell with animated arrow
+                    function createPriceCell(species) {
+                        const td = document.createElement('td');
+                        const p = a.prices || {};
+                        const pc = a.price_changes || {};
+
+                        if (p[species] !== undefined && p[species] !== null) {
+                            const priceText = 'N$ ' + p[species].toFixed(2);
+
+                            // Determine direction based on actual price change
+                            let direction = 'flat';
+                            let arrow = '→';
+                            let arrowClass = 'flat';
+
+                            // Check if price actually changed from last update
+                            const prev = previousAbattoirs[a.id] && previousAbattoirs[a.id][species];
+                            if (prev !== undefined && prev !== p[species]) {
+                                if (p[species] > prev) {
+                                    direction = 'up';
+                                    arrow = '▲';
+                                    arrowClass = 'up';
+                                } else if (p[species] < prev) {
+                                    direction = 'down';
+                                    arrow = '▼';
+                                    arrowClass = 'down';
+                                }
+                            }
+
+                            const changeInfo = pc[species];
+                            const changeText = changeInfo
+                                ? `${changeInfo.direction === 'up' ? '+' : ''}${changeInfo.change.toFixed(2)} (${changeInfo.change_percent.toFixed(2)}%)`
+                                : '';
+
+                            td.innerHTML = `<strong>${priceText}</strong> <span class="arrow ${arrowClass}">${arrow}</span> <small>${changeText}</small>`;
+                        } else {
+                            td.textContent = 'N/A';
+                        }
+
+                        return td;
+                    }
+
+                    tr.appendChild(createPriceCell('cattle'));
+                    tr.appendChild(createPriceCell('sheep'));
+                    tr.appendChild(createPriceCell('goat'));
+                    body.appendChild(tr);
+                });
+
+                // Store current prices for next comparison
+                data.abattoirs.forEach(a => {
+                    previousAbattoirs[a.id] = a.prices || {};
+                });
+
+                document.getElementById('abattoir-list-last-updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+            } catch (e) {
+                console.error('Error updating abattoir list:', e);
+                const body = document.getElementById('abattoir-prices-body');
+                if (body) {
+                    body.innerHTML = '<tr><td colspan="6">Error: ' + e.message + '</td></tr>';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const refreshBtn = document.getElementById('refresh-abattoir-list');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', updateAbattoirList);
+            }
+            updateAbattoirList();
+            setInterval(updateAbattoirList, 1000);  // Update every 1 second
+        });
+    </script>
 
 </body>
 

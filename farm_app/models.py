@@ -36,23 +36,28 @@ class Bull(models.Model):
     age = models.IntegerField()
     weight = models.DecimalField(max_digits=5, decimal_places=2)
 
+from django.conf import settings
+
+
 class Farm(models.Model):
-    date = models.DateField(null=True)
+    # Owner of the farm; nullable for legacy data but used to scope records per user
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE, related_name='farms')
+    date = models.DateField(null=True, blank=True)
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    breed = models.CharField(max_length=100,choices=Breed_CATEGORY,null = True)
+    breed = models.CharField(max_length=100,choices=Breed_CATEGORY,null=True, blank=True)
     cows_count = models.IntegerField(default=0)  # Number of cows
     bulls_count = models.IntegerField(default=0)  # Number of bulls
     calf_count = models.IntegerField(default=0)
-    vaccine1 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null = True)
-    vaccine2 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null = True)
-    vaccine3 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null = True)
+    vaccine1 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null=True, blank=True)
+    vaccine2 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null=True, blank=True)
+    vaccine3 = models.CharField(max_length=100,choices=Vaccine_CATEGORY,null=True, blank=True)
     is_branded = models.BooleanField(default=False)
-    pregnant_cows = models.IntegerField(default=0)
-    sick = models.IntegerField(default=0)
-    Feed = models.CharField(max_length=100,choices=Feed_CATEGORY,null = True)
+    pregnant_cows = models.IntegerField(default=0, blank=True)
+    sick = models.IntegerField(default=0, blank=True)
+    Feed = models.CharField(max_length=100,choices=Feed_CATEGORY,null=True, blank=True)
     feed_cost = models.FloatField( default=0)
-    notes = models.CharField(max_length=100 , null=True)
+    notes = models.CharField(max_length=100 , null=True, blank=True)
 
 
     def total_feed_cost(self):
@@ -96,6 +101,31 @@ class Farm(models.Model):
             return difference.days
         else:
             return None 
+
+
+class Abattoir(models.Model):
+    """Represent an abattoir and optional live-price API configuration.
+
+    Fields:
+    - name: displayed name
+    - location: optional human-readable location
+    - api_url: optional URL that returns JSON with price data
+    - species_json_paths: JSON mapping species key -> dot-path where price (N$ per kg) can be found
+      e.g. {"cattle": "prices.cattle", "sheep": "prices.sheep", "goat": "prices.goat"}
+    - last_prices: JSON snapshot of last known prices (used as fallback)
+    - last_fetched: timestamp of last successful fetch
+    - active: whether to include in lists
+    """
+    name = models.CharField(max_length=200)
+    location = models.CharField(max_length=200, null=True, blank=True)
+    api_url = models.CharField(max_length=500, null=True, blank=True)
+    species_json_paths = models.JSONField(default=dict, blank=True)
+    last_prices = models.JSONField(default=dict, blank=True)
+    last_fetched = models.DateTimeField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
 
    
 
