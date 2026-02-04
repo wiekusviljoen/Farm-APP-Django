@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Farm, Cow, Bull, Abattoir
+from .models import Farm, Cow, Bull, Abattoir, ChatMessage
 
 
 @admin.register(Farm)
@@ -58,3 +58,33 @@ class AbattoirAdmin(admin.ModelAdmin):
                 updated += 1
         self.message_user(request, f'Updated {updated} abattoir(s).')
     fetch_now_action.short_description = 'Fetch prices now for selected abattoirs'
+
+@admin.register(ChatMessage)
+class ChatMessageAdmin(admin.ModelAdmin):
+    list_display = ('user', 'farm', 'created_at', 'message_preview')
+    list_filter = ('created_at', 'farm', 'user')
+    search_fields = ('user__username', 'farm__name', 'user_message')
+    readonly_fields = ('created_at', 'user_message', 'ai_response', 'user')
+    ordering = ('-created_at',)
+    
+    fieldsets = (
+        ('Conversation Info', {'fields': ('user', 'farm', 'created_at')}),
+        ('User Message', {'fields': ('user_message',)}),
+        ('AI Response', {'fields': ('ai_response',)}),
+    )
+    
+    def message_preview(self, obj):
+        """Show preview of user message."""
+        preview = obj.user_message[:50]
+        if len(obj.user_message) > 50:
+            preview += '...'
+        return preview
+    message_preview.short_description = 'Message'
+    
+    def has_add_permission(self, request):
+        """Prevent manual addition through admin."""
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        """Allow deletion through admin."""
+        return True

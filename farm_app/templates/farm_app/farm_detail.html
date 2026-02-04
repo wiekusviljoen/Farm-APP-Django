@@ -248,11 +248,10 @@
 
         <a href="/admin/" class="button">Go to Admin</a>
 
-
+        <a href="{% url 'farm_app:farm_chatbot' farm.id %}" class="button"
+            style="background-color: #2196F3; right: 220px;">🤖 Chat About This Farm</a>
 
         <a href="{% url 'user_auth:login' %}" class="button login-button">Logout</a>
-
-
 
         <a href="/farm_app/" class="button back-button">Back</a>
 

@@ -1,15 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Farm, Cow, Bull, Abattoir
-from .forms import FarmForm
+from .models import Farm, Cow, Bull, Abattoir, ChatMessage
+from .forms import FarmForm, ChatMessageForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.http import JsonResponse
 from django.core.cache import cache
 from django.utils import timezone
 import json
 import urllib.request
 from django.conf import settings
+import os
+from openai import OpenAI
 
 
 @login_required
@@ -290,3 +292,138 @@ def bull_detail(request, bull_id):
     bull = get_object_or_404(Bull, pk=bull_id)
     # If needed, add farm association verification here
     return render(request, 'farm_app/bull_detail.html', {'bull': bull})
+
+@login_required
+def farm_chatbot(request, farm_id=None):
+    """Display the AI chatbot interface for farming advice."""
+    farm = None
+    if farm_id:
+        farm = get_object_or_404(Farm, pk=farm_id, owner=request.user)
+    
+    # Get chat history
+    if farm:
+        chat_history = ChatMessage.objects.filter(farm=farm).order_by('created_at')
+    else:
+        chat_history = ChatMessage.objects.filter(user=request.user).order_by('created_at')
+    
+    form = ChatMessageForm()
+    return render(request, 'farm_app/chatbot.html', {
+        'form': form,
+        'chat_history': chat_history,
+        'farm': farm,
+    })
+
+
+@login_required
+@require_POST
+def send_chat_message(request, farm_id=None):
+    """Handle chat message and return AI response."""
+    farm = None
+    if farm_id:
+        farm = get_object_or_404(Farm, pk=farm_id, owner=request.user)
+    
+    form = ChatMessageForm(request.POST)
+    
+    if not form.is_valid():
+        return JsonResponse({'error': 'Invalid message'}, status=400)
+    
+    user_message = form.cleaned_data['message']
+    
+    try:
+        # Get API key from settings or environment
+        api_key = getattr(settings, 'OPENAI_API_KEY', None) or os.getenv('OPENAI_API_KEY')
+        
+        if not api_key:
+            return JsonResponse({
+                'error': 'OpenAI API key not configured. Please set OPENAI_API_KEY in settings.py or environment variables.'
+            }, status=500)
+        
+        # Initialize OpenAI client
+        client = OpenAI(api_key=api_key)
+        
+        # Build context from user's farm data
+        context = _build_farm_context(request.user, farm)
+        
+        # Create system prompt
+        system_prompt = f"""You are an expert agricultural consultant specializing in cattle farming and animal nutrition in Namibia. 
+You provide practical, evidence-based advice on:
+- Cattle feeding and nutrition
+- Farm management best practices
+- Disease prevention and animal health
+- Breeding recommendations
+- Feed cost optimization
+- Cattle breeds suitable for various conditions
+
+Be friendly, informative, and concise. Consider local conditions (Namibia) when giving advice.
+If you have access to the farmer's data, use it to personalize your recommendations.
+
+{context}"""
+        
+        # Get AI response
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
+            ],
+            temperature=0.7,
+            max_tokens=500
+        )
+        
+        ai_response = response.choices[0].message.content
+        
+        # Save chat message to database
+        chat = ChatMessage.objects.create(
+            user=request.user,
+            user_message=user_message,
+            ai_response=ai_response,
+            farm=farm
+        )
+        
+        return JsonResponse({
+            'user_message': user_message,
+            'ai_response': ai_response,
+            'timestamp': chat.created_at.isoformat(),
+        })
+        
+    except Exception as e:
+        print(f"Chatbot error: {str(e)}")
+        return JsonResponse({
+            'error': f'Failed to get response: {str(e)}'
+        }, status=500)
+
+
+def _build_farm_context(user, farm=None):
+    """Build context from user's farm data for the AI."""
+    if farm:
+        context = f"""
+Farmer Information:
+- Farm Name: {farm.name}
+- Location: {farm.location}
+- Cattle Breed: {farm.breed if farm.breed else 'Not specified'}
+- Total Cattle: {farm.total_cattle}
+  - Cows: {farm.cows_count}
+  - Bulls: {farm.bulls_count}
+  - Calves: {farm.calf_count}
+- Pregnant Cows: {farm.pregnant_cows}
+- Sick Animals: {farm.sick}
+- Feed Type: {farm.Feed if farm.Feed else 'Not specified'}
+- Vaccination Status: {farm.vaccine1 or 'Not specified'}
+"""
+        return context
+    else:
+        # Show general context for all user's farms
+        farms = Farm.objects.filter(owner=user)
+        if farms.exists():
+            total_cattle = sum(f.total_cattle for f in farms)
+            total_cows = sum(f.cows_count for f in farms)
+            total_bulls = sum(f.bulls_count for f in farms)
+            context = f"""
+User's Farm Statistics:
+- Total Farms: {farms.count()}
+- Total Cattle: {total_cattle}
+- Total Cows: {total_cows}
+- Total Bulls: {total_bulls}
+"""
+            return context
+        return ""

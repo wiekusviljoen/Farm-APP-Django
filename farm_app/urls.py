@@ -12,6 +12,10 @@ urlpatterns = [
     path('api/abattoir-prices/', views.abattoir_prices_list, name='abattoir_prices'),
     path('admin/trigger-abattoir-fetch/', views_admin.trigger_fetch_abattoirs, name='trigger_abattoir_fetch'),
     path('farm/<int:farm_id>/', views.farm_detail, name='farm_detail'),
+    path('farm/<int:farm_id>/chatbot/', views.farm_chatbot, name='farm_chatbot'),
+    path('farm/<int:farm_id>/chat/', views.send_chat_message, name='send_chat_message'),
+    path('chatbot/', views.farm_chatbot, name='chatbot'),
+    path('chat/', views.send_chat_message, name='send_chat_message_global'),
     path('cow/<int:cow_id>/', views.cow_detail, name='cow_detail'),
     path('bull/<int:bull_id>/', views.bull_detail, name='bull_detail'),
 ]

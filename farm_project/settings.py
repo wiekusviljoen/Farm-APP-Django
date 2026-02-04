@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -165,3 +169,6 @@ SESSION_COOKIE_AGE = 3600  # 1 hour session timeout
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Session expires when browser closes
 CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
 CSRF_COOKIE_HTTPONLY = True  # CSRF cookie not accessible via JavaScript
+# OpenAI Configuration for Chatbot
+# Set OPENAI_API_KEY in environment variables or here
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', None)

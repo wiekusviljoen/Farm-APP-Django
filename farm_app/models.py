@@ -127,6 +127,19 @@ class Abattoir(models.Model):
     def __str__(self):
         return self.name
 
-   
+
+class ChatMessage(models.Model):
+    """Store AI chatbot conversation history."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chat_messages')
+    user_message = models.TextField()
+    ai_response = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    farm = models.ForeignKey(Farm, null=True, blank=True, on_delete=models.CASCADE, related_name='chat_messages')
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.created_at}"
 
 

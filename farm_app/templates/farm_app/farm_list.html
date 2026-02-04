@@ -134,6 +134,7 @@
 
         {% if user.is_authenticated %}
         <a href="{% url 'farm_app:create_farm' %}" class="button">Add Farm</a>
+        <a href="{% url 'farm_app:chatbot' %}" class="button" style="background-color: #2196F3;">🤖 Chat with AI</a>
         <a href="{% url 'user_auth:login' %}" class="button logout-button">Logout</a>
         {% else %}
         <a href="{% url 'user_auth:login' %}" class="button logout-button">Login</a>

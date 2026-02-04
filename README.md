@@ -1,13 +1,19 @@
 # Project Name : Farm Application
 
-# Description : This Farm application is used to register cattle herds, feed costs, sick animals, etc.
+# Description : This Farm application is used to register cattle herds, feed costs, sick animals, etc. It now includes an AI-powered chatbot that provides expert farming advice.
+
+# Features:
+- Farm management and cattle herd tracking
+- Feed cost calculations and analysis
+- Sick animal management
+- Live abattoir price updates
+- **NEW: AI Chatbot for farming advice** 🤖
 
 # Table of Contents : 
 
 [Installation](https://github.com/wiekusviljoen/Farm-APP-Django/blob/main/README.md#installation-)
-
+[Chatbot Setup](https://github.com/wiekusviljoen/Farm-APP-Django/blob/main/README.md#ai-chatbot-setup-)
 [Usage](https://github.com/wiekusviljoen/Farm-APP-Django/blob/main/README.md#usage-)
-
 [Credits](https://github.com/wiekusviljoen/Farm-APP-Django/blob/main/README.md#credits-)
 
 # Installation :
@@ -18,7 +24,34 @@ git clone https://github.com/wiekusviljoen/Farm-APP-Django.git
 
 cd Farm-APP-Django
 
+pip install -r requirements.txt
+
 python manage.py runserver
+
+# AI Chatbot Setup :
+
+The application includes an AI-powered chatbot for farming advice powered by OpenAI.
+
+## Quick Setup (5 minutes):
+
+1. **Get API Key**: https://platform.openai.com/api-keys
+2. **Configure**: Set environment variable `OPENAI_API_KEY=sk-your-key`
+3. **Migrate**: `python manage.py migrate`
+4. **Visit**: http://localhost:8000/chatbot/
+
+## Features:
+- 💬 Ask questions about cattle feeding, breeding, health, and farm management
+- 🌾 Farm-specific advice based on your herd data
+- 💾 Conversation history auto-saved
+- 📱 Mobile-friendly interface
+- ⚡ Real-time AI responses
+
+## Full Documentation:
+- Quick Start: See [QUICK_START.md](QUICK_START.md) (5 min read)
+- Setup Guide: See [CHATBOT_SETUP.md](CHATBOT_SETUP.md) (30 min read)
+- Technical Details: See [CHATBOT_IMPLEMENTATION.md](CHATBOT_IMPLEMENTATION.md)
+
+**Important**: OpenAI API has associated costs. Monitor usage at https://platform.openai.com/usage
 
 # Usage :
 

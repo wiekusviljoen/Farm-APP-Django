@@ -1,0 +1,16 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^python manage\\.py update_abattoir_prices$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python manage\\.py migrate$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python manage\\.py showmigrations farm_app \\| findstr \"chatmessage\\\\\\|0030\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
